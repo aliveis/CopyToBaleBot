@@ -1,0 +1,11 @@
+.git
+.env
+.env.*
+!.env.example
+.tgcloud
+data
+node_modules
+*.db
+*.db-shm
+*.db-wal
+*.log

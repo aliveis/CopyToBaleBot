@@ -1,0 +1,24 @@
+# systemd unit for running CopyToBaleBot without Docker.
+#   sudo cp deploy/copytobalebot.service /etc/systemd/system/
+#   (adjust User, WorkingDirectory and the node path below)
+#   sudo systemctl daemon-reload && sudo systemctl enable --now copytobalebot
+#   journalctl -u copytobalebot -f
+[Unit]
+Description=CopyToBaleBot (Telegram <-> Bale channel sync)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=copytobalebot
+WorkingDirectory=/opt/CopyToBaleBot
+EnvironmentFile=/opt/CopyToBaleBot/.env
+Environment=NODE_ENV=production
+ExecStart=/usr/bin/node --disable-warning=ExperimentalWarning server.js
+Restart=always
+RestartSec=5
+# Lets the bot finish the job in hand before it is killed.
+TimeoutStopSec=30
+
+[Install]
+WantedBy=multi-user.target

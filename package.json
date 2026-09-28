@@ -1,19 +1,16 @@
 {
   "name": "copytobalebot",
-  "version": "1.0.0",
-  "description": "Telegram ⇄ Bale channel sync bot on Telegram Serverless",
+  "version": "2.0.0",
+  "description": "Telegram ⇄ Bale channel sync bot (self-hosted Node.js server)",
+  "type": "module",
+  "main": "server.js",
   "scripts": {
-    "secrets": "node scripts/gen-secrets.mjs",
-    "status": "scripts/tg.sh status",
-    "deploy": "node scripts/gen-secrets.mjs && scripts/tg.sh push",
-    "migrate": "scripts/tg.sh migrate",
-    "webhook": "scripts/tg.sh webhook",
-    "commands": "scripts/set-commands.sh"
+    "start": "node --disable-warning=ExperimentalWarning server.js",
+    "import:tgcloud": "node --disable-warning=ExperimentalWarning scripts/import-tgcloud.mjs"
+  },
+  "engines": {
+    "node": ">=22.13"
   },
   "license": "MIT",
-  "type": "module",
-  "devDependencies": {
-    "@tgcloud/cli": "^0.1.2"
-  },
   "private": true
 }

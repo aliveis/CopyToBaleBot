@@ -2,9 +2,14 @@
 .env
 .env.*
 !.env.example
-lib/secrets.js
 
-# tgcloud CLI state (holds credentials/snapshots)
+# Database (SQLite + WAL files)
+data/
+*.db
+*.db-shm
+*.db-wal
+
+# Old tgcloud CLI state (holds credentials/snapshots)
 .tgcloud/
 
 # Dependencies / tooling

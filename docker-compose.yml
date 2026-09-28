@@ -1,0 +1,16 @@
+services:
+  bot:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - botdata:/app/data
+    # Lets the bot finish the job in hand on `docker compose down` / restart.
+    stop_grace_period: 30s
+    init: true
+    # Webhook mode only (TG_WEBHOOK_URL set): expose the port to your reverse proxy.
+    # ports:
+    #   - "127.0.0.1:8080:8080"
+
+volumes:
+  botdata:

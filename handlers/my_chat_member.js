@@ -1,9 +1,8 @@
 // handlers/my_chat_member — the bot was added to / removed from a Telegram channel.
-import { linkByChat, linkTitle } from 'lib/links';
-import { trySend } from 'lib/platform';
-import { watchdog } from 'lib/tick';
-import { logError } from 'lib/store';
-import { esc } from 'lib/util';
+import { linkByChat, linkTitle } from '../lib/links.js';
+import { trySend } from '../lib/platform.js';
+import { logError } from '../lib/store.js';
+import { esc } from '../lib/util.js';
 
 export default async function (upd) {
   try {
@@ -24,7 +23,5 @@ export default async function (upd) {
     }
   } catch (e) {
     await logError('tg:my_chat_member', e);
-  } finally {
-    await watchdog();
   }
 }
