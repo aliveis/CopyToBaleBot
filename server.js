@@ -2,9 +2,10 @@
 // updates (long polling or webhook), the Bale pump, the job workers and
 // maintenance. Configuration comes from .env (see .env.example).
 import {
-  configProblems, ADMINS, BOT_ID, BOT_USERNAME, COMMANDS, DB_PATH, WEBHOOK, WORKER,
+  configProblems, ADMINS, ALLOWED, BOT_ID, BOT_USERNAME, COMMANDS, DB_PATH, WEBHOOK, WORKER,
 } from './lib/config.js';
-import { openDb, closeDb } from './lib/db.js';
+import { openDb, closeDb, db, sql } from './lib/db.js';
+import { ownerAllowed } from './lib/links.js';
 import { logError, lockInstance, renewInstanceLock, releaseInstanceLock } from './lib/store.js';
 import { requeueRunning } from './lib/queue.js';
 import { tg } from './lib/telegram.js';
@@ -102,9 +103,13 @@ async function main() {
     BOT_ID.bale = meBale.id;
     BOT_USERNAME.bale = meBale.username;
     console.log(`Telegram: @${meTg.username} (${meTg.id}) | Bale: @${meBale.username} (${meBale.id})`);
+    console.log(`Private bot: admins ${ADMINS.tg.length} Telegram + ${ADMINS.bale.length} Bale, `
+      + `allowed users ${ALLOWED.tg.length} Telegram + ${ALLOWED.bale.length} Bale`);
     if (!ADMINS.tg.length && !ADMINS.bale.length) {
       console.warn('TG_ADMINS / BALE_ADMINS are empty: nobody can open the admin panel.');
     }
+    const idle = (await db.all(sql`SELECT owner_tg, owner_bale FROM links`)).filter((l) => !ownerAllowed(l)).length;
+    if (idle) console.warn(`${idle} link(s) have no allowed owner and will not sync until one is added to the allowed users.`);
     await setCommands();
 
     const loops = {

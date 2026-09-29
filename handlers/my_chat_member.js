@@ -1,5 +1,6 @@
 // handlers/my_chat_member — the bot was added to / removed from a Telegram channel.
 import { linkByChat, linkTitle } from '../lib/links.js';
+import { isAllowed } from '../lib/config.js';
 import { trySend } from '../lib/platform.js';
 import { logError } from '../lib/store.js';
 import { esc } from '../lib/util.js';
@@ -11,7 +12,7 @@ export default async function (upd) {
     const status = upd.new_chat_member?.status;
     const link = await linkByChat('tg', chat.id);
     if (status === 'administrator') {
-      if (link || !upd.from || upd.from.is_bot) return;
+      if (link || !upd.from || upd.from.is_bot || !isAllowed('tg', upd.from.id)) return;
       await trySend('tg', upd.from.id,
         `✅ ربات به کانال <b>${esc(chat.title)}</b> اضافه شد.\n\nمی‌خواهی این کانال را به یک کانال بله وصل کنی؟`,
         { kb: [[{ text: '🔗 اتصال این کانال به بله', cb: 'cn:' + chat.id }]] });
